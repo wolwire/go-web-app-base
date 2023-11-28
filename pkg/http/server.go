@@ -17,7 +17,7 @@ type Server struct {
 func (server *Server) InitializeServer() {
 	server.Engine = gin.Default()
 	server.HttpServer = &http.Server{
-		Addr:           viper.GetString("server.Addr"),
+		Addr:           viper.GetString("server.addr"),
 		Handler:        server.Engine,
 		ReadTimeout:    time.Duration(viper.GetInt("server.read_timeout")) * time.Second,
 		WriteTimeout:   time.Duration(viper.GetInt("server.write_timeout")) * time.Second,
