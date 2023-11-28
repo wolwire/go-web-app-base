@@ -5,12 +5,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
 func LoadRoutes(engine *gin.Engine){
 	fmt.Println("Loading Routes.............")
-	engine.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	LoadExternalRoutes(engine)
 	fmt.Println("Routes Loaded..............")
 }

@@ -1,5 +1,0 @@
-server:
-  addr: ":3000"
-  environment: development
-  read_timeout: 10
-  write_timeout: 10
