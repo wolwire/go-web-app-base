@@ -10,7 +10,7 @@ import (
 )
 
 type Server struct {
-	Engine *gin.Engine
+	Engine     *gin.Engine
 	HttpServer *http.Server
 }
 

@@ -9,11 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type UserController struct{
-
+type UserController struct {
 }
 
-func (user_controller *UserController) Index(c *gin.Context){
+func (user_controller *UserController) Index(c *gin.Context) {
 	var users []models.User
 	result := database.DB.Find(&users)
 	if result.RowsAffected > 0 && result.Error == nil {
@@ -23,14 +22,13 @@ func (user_controller *UserController) Index(c *gin.Context){
 	}
 }
 
-func (user_controller *UserController) Show(c *gin.Context){
+func (user_controller *UserController) Show(c *gin.Context) {
 	var user models.User
 	user_id, err := strconv.Atoi(c.Param("id"))
-	if err!=nil{
+	if err != nil {
 		c.JSON(http.StatusBadRequest, user)
 		return
 	}
-	
 
 	result := database.DB.Find(&user, user_id)
 	if result.RowsAffected > 0 && result.Error == nil {

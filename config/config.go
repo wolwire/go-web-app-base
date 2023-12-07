@@ -7,10 +7,10 @@ import (
 
 func LoadConfig() {
 	fmt.Println("Loading config ..........")
-	viper.SetConfigName("config.local") 
-	viper.SetConfigType("yml")          
-	viper.AddConfigPath("config/")      
-	err := viper.ReadInConfig()         
+	viper.SetConfigName("config.local")
+	viper.SetConfigType("yml")
+	viper.AddConfigPath("config/")
+	err := viper.ReadInConfig()
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file: %w", err))
 	}

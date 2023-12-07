@@ -6,9 +6,10 @@ import (
 	"github.com/flowista2/pkg/http"
 )
 
+var server http.Server
+
 func main() {
 	config.LoadConfig()
-	var server http.Server
 	server.InitializeServer()
 	server.AssignRoutes()
 	database.Initialize()
