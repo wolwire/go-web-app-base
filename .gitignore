@@ -1,4 +1,5 @@
-*.local.yml
+config/*.local.yaml
+*.local.yaml
 *.db
 
 # Go
