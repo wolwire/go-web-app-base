@@ -6,14 +6,19 @@ import (
 )
 
 func LoadExternalRoutes(engine *gin.Engine) {
-	public_group := engine.Group("/api")
+	publicGroup := engine.Group("/api")
 	{
-		v1_router_group := public_group.Group("/v1")
+		v1RouterGroup := publicGroup.Group("/v1")
 		{
-			var user_controller v1.UserController
+			var userController v1.UserController
 			{
-				v1_router_group.GET("/users", user_controller.Index)
-				v1_router_group.GET("/users/:id", user_controller.Show)
+				v1RouterGroup.GET("/users/:id", userController.Show)
+				v1RouterGroup.POST("/users", userController.Create)
+			}
+			
+			var loginController v1.LoginController
+			{
+				v1RouterGroup.POST("/login", loginController.Login)
 			}
 		}
 	}
