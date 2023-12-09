@@ -6,12 +6,12 @@ import (
 )
 
 type User struct {
-	ID           int    `json:"id" gorm:"primaryKey"`
-	NAME         string `json:"name"`
-	EMAIL        string `json:"email" gorm:"uniqueIndex:idx_email"`
-	PHONE_NUMBER string `json:"phone_number" gorm:"uniqueIndex:idx_phone_number"`
-	USERNAME     string `json:"username" gorm:"uniqueIndex:idx_username"`
-	PASSWORD     string
+    ID           int    `json:"id" gorm:"primaryKey"`
+    NAME         string `json:"name"`
+    EMAIL        string `json:"email" gorm:"type:varchar(100);uniqueIndex:idx_email"`
+    PHONE_NUMBER string `json:"phone_number" gorm:"type:varchar(100);uniqueIndex:idx_phone_number"`
+    USERNAME     string `json:"username" gorm:"type:varchar(100);uniqueIndex:idx_username"`
+    PASSWORD     string
 }
 
 func (User) TableName() string {

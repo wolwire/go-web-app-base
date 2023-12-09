@@ -7,6 +7,9 @@ import (
 
 func LoadRoutes(engine *gin.Engine) {
 	fmt.Println("Loading Routes.............")
-	LoadExternalRoutes(engine)
+	err := LoadExternalRoutes(engine)
+	if err != nil {
+		panic(fmt.Errorf("fatal error loading external routes: %w", err))
+	}
 	fmt.Println("Routes Loaded..............")
 }
