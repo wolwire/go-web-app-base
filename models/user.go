@@ -6,11 +6,11 @@ import (
 )
 
 type User struct {
-	ID           int    `json:"id"`
+	ID           int    `json:"id" gorm:"primaryKey"`
 	NAME         string `json:"name"`
-	EMAIL        string `json:"email"`
-	PHONE_NUMBER string `json:"phone_number"`
-	USERNAME     string `json:"username"`
+	EMAIL        string `json:"email" gorm:"uniqueIndex:idx_email"`
+	PHONE_NUMBER string `json:"phone_number" gorm:"uniqueIndex:idx_phone_number"`
+	USERNAME     string `json:"username" gorm:"uniqueIndex:idx_username"`
 	PASSWORD     string
 }
 
@@ -40,5 +40,9 @@ func (user *User) hashPassword() error {
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
+}
+
+func (user *User) ComparePassword(password string) error {
+	return bcrypt.CompareHashAndPassword([]byte(user.PASSWORD), []byte(password))
 }
 

@@ -18,13 +18,31 @@ type UserController struct {
 // If the ID parameter is not a valid integer, it returns HTTP status code 400 (Bad Request).
 func (user_controller *UserController) Show(c *gin.Context) {
 	var user models.User
-	user_id, err := strconv.Atoi(c.Param("id"))
+
+	// Fetch user ID from session cookie
+	cookie, err := c.Cookie("session")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, user)
 		return
 	}
 
+	// Extract user ID from cookie
+	user_id, err := strconv.Atoi(cookie)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, user)
+		return
+	}
+
+	// Match path parameter with user ID
+	if strconv.Itoa(user_id) != c.Param("id") {
+		c.JSON(http.StatusBadRequest, user)
+		return
+	}
+
+	// Fetch user from database
 	result := database.DB.Find(&user, user_id)
+
+	// Return user details
 	if result.RowsAffected > 0 && result.Error == nil {
 		c.JSON(http.StatusOK, user)
 	} else {
