@@ -1,13 +1,13 @@
-package router
+package routes
 
 import (
 	"errors"
 
-	v1 "github.com/flowista2/api/public/v1"
+	v1 "github.com/flowista2/internal/http/controllers/public/v1"
 	"github.com/gin-gonic/gin"
 )
 
-func LoadExternalRoutes(engine *gin.Engine) error {
+func LoadPublicRoutes(engine *gin.Engine) error {
 	publicGroup := engine.Group("/api")
 	{
 		v1RouterGroup := publicGroup.Group("/v1")

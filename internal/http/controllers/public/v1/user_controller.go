@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/flowista2/pkg/handlers"
 	"github.com/flowista2/models"
 	"github.com/flowista2/pkg/database"
 	"github.com/gin-gonic/gin"
 )
 
-type UserController struct {
-}
+type UserController struct {}
 
 // Show retrieves a user by their ID and returns the user information as JSON.
 // If the user is found, it returns HTTP status code 200 (OK) along with the user details.
@@ -58,11 +58,20 @@ func (user_controller *UserController) Show(c *gin.Context) {
 // If there is an error during the creation process, it returns a JSON response with the user details and HTTP status code 404 (Not Found).
 func (user_controller *UserController) Create(c *gin.Context) {
 	var user models.User
-	user.USERNAME = c.PostForm("username")
-	user.EMAIL = c.PostForm("email")
-	user.PHONE_NUMBER = c.PostForm("phone_number")
-	user.PASSWORD = c.PostForm("password") // password is hashed before storing in database
-	
+
+	// Parse the POST params JSON into a hashmap
+	params, err := handlers.ParseParams(c)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, user)
+		return
+	}
+
+	// Extract the user information from the hashmap
+	user.USERNAME = params["username"].(string)
+	user.EMAIL = params["email"].(string)
+	user.PHONE_NUMBER = params["phone_number"].(string)
+	user.PASSWORD = params["password"].(string) // password is hashed before storing in database
+
 	result := database.DB.Create(&user)
 	if result.RowsAffected > 0 && result.Error == nil {
 		c.JSON(http.StatusOK, user)

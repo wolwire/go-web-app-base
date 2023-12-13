@@ -1,9 +1,10 @@
 package main
 
 import (
-	"os"
 	"fmt"
-	"github.com/flowista2/config"
+	"os"
+
+	"github.com/flowista2/pkg/config"
 	"github.com/flowista2/pkg/database"
 	"github.com/flowista2/pkg/http"
 )
@@ -15,7 +16,9 @@ func main() {
 		fmt.Println("Please provide an action (server, db)")
 		return
 	}
+	
 	config.LoadConfig()
+
 	action := os.Args[1]
 
 	switch action {
@@ -31,7 +34,6 @@ func main() {
 func startServer() {
 		fmt.Println("Starting the server...")
 		server.InitializeServer()
-		server.AssignRoutes()
 		database.Initialize()
 		server.RunServer()
 }
