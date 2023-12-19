@@ -1,41 +1,39 @@
 package v1
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
-	"github.com/flowista2/pkg/handlers"
 	"github.com/flowista2/models"
 	"github.com/flowista2/pkg/database"
+	"github.com/flowista2/pkg/handlers"
 	"github.com/gin-gonic/gin"
 )
 
-type UserController struct {}
+type UserController struct{}
 
 // Show retrieves a user by their ID and returns the user information as JSON.
 // If the user is found, it returns HTTP status code 200 (OK) along with the user details.
 // If the user is not found, it returns HTTP status code 404 (Not Found).
 // If the ID parameter is not a valid integer, it returns HTTP status code 400 (Bad Request).
-func (user_controller *UserController) Show(c *gin.Context) {
+func (userController *UserController) Show(c *gin.Context) {
 	var user models.User
 
 	// Fetch user ID from session cookie
-	cookie, err := c.Cookie("session")
-	if err != nil {
-		c.JSON(http.StatusBadRequest, user)
+	current_user, err := c.Get("current_user")
+	if !err {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID1"})
 		return
 	}
 
 	// Extract user ID from cookie
-	user_id, err := strconv.Atoi(cookie)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, user)
-		return
-	}
+	user_id := current_user.(models.User).ID
 
 	// Match path parameter with user ID
 	if strconv.Itoa(user_id) != c.Param("id") {
-		c.JSON(http.StatusBadRequest, user)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID2"})
 		return
 	}
 
@@ -65,17 +63,15 @@ func (user_controller *UserController) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, user)
 		return
 	}
-
 	// Extract the user information from the hashmap
 	user.USERNAME = params["username"].(string)
 	user.EMAIL = params["email"].(string)
 	user.PHONE_NUMBER = params["phone_number"].(string)
 	user.PASSWORD = params["password"].(string) // password is hashed before storing in database
-
 	result := database.DB.Create(&user)
 	if result.RowsAffected > 0 && result.Error == nil {
-		c.JSON(http.StatusOK, user)
+		c.JSON(http.StatusOK, &user)
 	} else {
-		c.JSON(http.StatusNotFound, user)
+		c.JSON(http.StatusNotFound, &user)
 	}
 }

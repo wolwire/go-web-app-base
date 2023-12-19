@@ -1,18 +1,20 @@
 package models
 
 import (
+	// "fmt"
+
 	"github.com/flowista2/pkg"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type User struct {
-    ID           int    `json:"id"`
-    NAME         string `json:"name"`
-    EMAIL        string `json:"email"`
-    PHONE_NUMBER string `json:"phone_number"`
-    USERNAME     string `json:"username"`
-    PASSWORD     string
+	ID           int    `json:"id"`
+	NAME         string `json:"name"`
+	EMAIL        string `json:"email"`
+	PHONE_NUMBER string `json:"phone_number"`
+	USERNAME     string `json:"username"`
+	PASSWORD     string `json:"-"`
 }
 
 func (User) TableName() string {
@@ -42,3 +44,6 @@ func (user *User) ComparePassword(password string) error {
 	return bcrypt.CompareHashAndPassword([]byte(user.PASSWORD), []byte(password))
 }
 
+// func (user *User) String() string {
+// 	return fmt.Sprintf("name: %s, Username: %s", user.NAME, user.USERNAME)
+// }

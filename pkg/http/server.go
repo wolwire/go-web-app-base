@@ -24,10 +24,11 @@ func (server *Server) InitializeServer() {
 		WriteTimeout:   time.Duration(viper.GetInt("server.write_timeout")) * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	routes.LoadRoutes(server.Engine)
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
+	config.AllowOrigins = []string{"http://localhost:3002"}
+	config.AllowCredentials = true
 	server.Engine.Use(cors.New(config))
+	routes.LoadRoutes(server.Engine)
 }
 
 func (server *Server) RunServer() {

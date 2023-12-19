@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/flowista2/pkg/caching"
 	"github.com/flowista2/pkg/config"
 	"github.com/flowista2/pkg/database"
 	"github.com/flowista2/pkg/http"
@@ -35,5 +36,6 @@ func startServer() {
 		fmt.Println("Starting the server...")
 		server.InitializeServer()
 		database.Initialize()
+		caching.Initialize()
 		server.RunServer()
 }
