@@ -13,7 +13,7 @@ func LoadPublicRoutes(engine *gin.Engine) error {
 		{
 			var userController v1.UserController
 			{
-				v1RouterGroup.GET("/users/:id", middleware.UserAuth(), userController.Show)
+				v1RouterGroup.GET("/users/details", middleware.UserAuth(), userController.Show)
 				v1RouterGroup.POST("/users", userController.Create)
 			}
 

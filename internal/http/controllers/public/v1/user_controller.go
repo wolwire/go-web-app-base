@@ -3,7 +3,6 @@ package v1
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
 	"github.com/flowista2/models"
 	"github.com/flowista2/pkg/database"
@@ -24,19 +23,13 @@ func (userController *UserController) Show(c *gin.Context) {
 	current_user, err := c.Get("current_user")
 	if !err {
 		fmt.Println(err)
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID1"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
 	}
 
 	// Extract user ID from cookie
 	user_id := current_user.(models.User).ID
-
-	// Match path parameter with user ID
-	if strconv.Itoa(user_id) != c.Param("id") {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID2"})
-		return
-	}
-
+	
 	// Fetch user from database
 	result := database.DB.Find(&user, user_id)
 
@@ -44,7 +37,7 @@ func (userController *UserController) Show(c *gin.Context) {
 	if result.RowsAffected > 0 && result.Error == nil {
 		c.JSON(http.StatusOK, user)
 	} else {
-		c.JSON(http.StatusNotFound, user)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Invalid user"})
 	}
 }
 
