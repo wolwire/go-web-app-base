@@ -3,6 +3,7 @@ package cookie
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/flowista2/models"
@@ -10,7 +11,6 @@ import (
 	"github.com/flowista2/pkg/caching"
 	"github.com/spf13/viper"
 )
-
 
 func SessionCookie(user models.User) (*http.Cookie, error) {
 	var key = viper.GetString("session.key")
@@ -35,13 +35,19 @@ func SessionCookie(user models.User) (*http.Cookie, error) {
 	}, nil
 }
 
+type UserNotLoggedIn struct{}
+
+func (user_error *UserNotLoggedIn) Error() string {
+	return "User Session Expired"
+}
+
 func SessionUser(cookie *http.Cookie) (*models.User, error) {
 	var key = viper.GetString("session.key")
 	encryptedData, err := caching.RedisClient.Get(cookie.Value).Bytes()
 	if err != nil {
-		return nil, err
+		return nil, &UserNotLoggedIn{}
 	}
-
+	fmt.Println(encryptedData)
 	decryptedData, err := pkg.Decrypt(encryptedData, []byte(key))
 	if err != nil {
 		return nil, err
@@ -50,6 +56,7 @@ func SessionUser(cookie *http.Cookie) (*models.User, error) {
 	var user models.User
 	err = json.Unmarshal(decryptedData, &user)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
