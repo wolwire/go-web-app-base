@@ -3,8 +3,8 @@ package cookie
 import (
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/flowista2/models"
 	"github.com/flowista2/pkg"
@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func SessionCookie(user models.User) (*http.Cookie, error) {
+func SessionCookie(user models.User, expiry_duration time.Duration) (*http.Cookie, error) {
 	var key = viper.GetString("session.key")
 	userJson, err := json.Marshal(user)
 	if err != nil {
@@ -22,16 +22,21 @@ func SessionCookie(user models.User) (*http.Cookie, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	encodedData := base64.StdEncoding.EncodeToString(encryptedData)
+	
+	if time.Now().Add(expiry_duration).Before(time.Now().Add(time.Second)) {
+		caching.RedisClient.Del(encodedData)
+	} else {
+		caching.RedisClient.Set(encodedData, encryptedData, expiry_duration)
+	}
 
-	caching.RedisClient.Set(encodedData, encryptedData, 0)
 	return &http.Cookie{
 		Name:     "session",
 		Value:    encodedData,
 		HttpOnly: false,
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
+		Expires: time.Now().Add(expiry_duration),
 	}, nil
 }
 
@@ -47,7 +52,6 @@ func SessionUser(cookie *http.Cookie) (*models.User, error) {
 	if err != nil {
 		return nil, &UserNotLoggedIn{}
 	}
-	fmt.Println(encryptedData)
 	decryptedData, err := pkg.Decrypt(encryptedData, []byte(key))
 	if err != nil {
 		return nil, err
@@ -56,7 +60,6 @@ func SessionUser(cookie *http.Cookie) (*models.User, error) {
 	var user models.User
 	err = json.Unmarshal(decryptedData, &user)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 

@@ -25,8 +25,9 @@ func (server *Server) InitializeServer() {
 		MaxHeaderBytes: 1 << 20,
 	}
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3002"}
+	config.AllowOrigins = []string{"https://jackal-fair-crawdad.ngrok-free.app"}
 	config.AllowCredentials = true
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization", "Cookie"}
 	server.Engine.Use(cors.New(config))
 	routes.LoadRoutes(server.Engine)
 }
