@@ -3,6 +3,7 @@ package v1
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/flowista2/models"
 	"github.com/flowista2/pkg/cookie"
@@ -39,7 +40,7 @@ func (user_controller *LoginController) Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
-	sessionCookie, err := cookie.SessionCookie(user)
+	sessionCookie, err := cookie.SessionCookie(user, time.Hour*24*7)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})

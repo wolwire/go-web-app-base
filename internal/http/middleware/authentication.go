@@ -14,13 +14,17 @@ func UserAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		session_cookie, err := c.Request.Cookie("session")
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
 			return
 		}
 
 		session_user, err := cookie.SessionUser(session_cookie)
 		if err != nil {
+			expired_session_cookie, errNew := cookie.SessionCookie(models.User{}, -1)
+			if errNew == nil {
+				http.SetCookie(c.Writer, expired_session_cookie)
+			}
 			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 			c.Abort()
 			return
