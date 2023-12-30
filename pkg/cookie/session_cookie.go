@@ -37,6 +37,7 @@ func SessionCookie(user models.User, expiry_duration time.Duration) (*http.Cooki
 		SameSite: http.SameSiteNoneMode,
 		Secure:   true,
 		Expires: time.Now().Add(expiry_duration),
+		Path: "/",
 	}, nil
 }
 

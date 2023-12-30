@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/flowista2/models"
@@ -22,7 +21,6 @@ func (userController *UserController) Show(c *gin.Context) {
 	// Fetch user ID from session cookie
 	current_user, err := c.Get("current_user")
 	if !err {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
 	}

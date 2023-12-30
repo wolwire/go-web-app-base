@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -42,7 +41,6 @@ func (user_controller *LoginController) Login(c *gin.Context) {
 	}
 	sessionCookie, err := cookie.SessionCookie(user, time.Hour*24*7)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 		return
 	}
